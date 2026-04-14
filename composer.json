@@ -1,0 +1,19 @@
+{
+    "name": "gr432_kapal/composertask1",
+    "description": "1 задание",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Павел Калашников"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": { "php": "^7.4 | ^8.0"},
+    "autoload": {
+        "psr-4": {
+            "Src\\": "core/Src/",
+            "": "app/"
+        }
+    }
+}

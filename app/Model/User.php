@@ -8,9 +8,8 @@ class User
 {
     private static function db()
     {
-        return new PDO('mysql:host=localhost;dbname=clinic;charset=utf8', 'root', '');
+        return new PDO('mysql:host=127.0.0.1;dbname=clinic;charset=utf8', 'root', '');
     }
-
     public static function findByLogin($login)
     {
         $stmt = self::db()->prepare("SELECT * FROM users WHERE login = ?");
@@ -18,7 +17,6 @@ class User
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
     public static function create($data)
     {
         $stmt = self::db()->prepare("

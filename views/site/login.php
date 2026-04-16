@@ -7,5 +7,5 @@
     <input type="password" name="password" placeholder="Пароль" required>
     <br><br>
 
-    <button type="submit">Войти</button>
+    <button type="submit">Войти</button> <a href="/pop-it-mvc/">На главную</a>
 </form>

@@ -26,15 +26,14 @@ class Route
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $uri = trim($uri, '/');
         $segments = explode('/', $uri);
-        if ($segments[0] === 'pop-it-mvc') {
+        if (isset($segments[0]) && $segments[0] === 'pop-it-mvc') {
             array_shift($segments);
         }
 
-        $uri = $segments[0] ?? '';
-
-        if ($uri === '') {
-            $uri = 'go';
+        if (isset($segments[0]) && $segments[0] === 'public') {
+            array_shift($segments);
         }
+        $uri = implode('/', $segments);
 
         if (!array_key_exists($uri, self::$routes)) {
             throw new Error("This path does not exist: $uri");

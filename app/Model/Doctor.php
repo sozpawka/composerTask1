@@ -25,7 +25,7 @@ class Doctor
         return $stmt->execute([
             $data['last_name'],
             $data['first_name'],
-            $data['middle_name'],
+            $data['middle_name'] ?? null,
             $data['birth_date'],
             $data['position'],
             $data['specialization']

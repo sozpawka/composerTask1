@@ -10,6 +10,13 @@ class Patient
     {
         return new PDO('mysql:host=127.0.0.1;dbname=clinic;charset=utf8', 'root', '');
     }
+    public static function all(): array
+    {
+        return self::db()
+            ->query("SELECT * FROM patients ORDER BY id DESC")
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function create($data)
     {
         $stmt = self::db()->prepare("
@@ -20,13 +27,8 @@ class Patient
         return $stmt->execute([
             $data['last_name'],
             $data['first_name'],
-            $data['middle_name'],
+            $data['middle_name'] ?? null,
             $data['birth_date']
         ]);
-    }
-    public static function all(): array
-    {
-        $stmt = self::db()->query("SELECT * FROM patients ORDER BY id DESC");
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

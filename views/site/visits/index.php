@@ -3,7 +3,6 @@
 <h3>Новая запись</h3>
 
 <form method="POST" action="/pop-it-mvc/visits/create">
-
     <select name="patient_id">
         <?php foreach ($patients as $p): ?>
             <option value="<?= $p['id'] ?>">
@@ -25,11 +24,21 @@
     <button type="submit">Записать</button>
     <a href="/pop-it-mvc/">На главную</a>
 </form>
-
 <hr>
-
 <h3>Записи</h3>
-
+<h4>Фильтр по пациенту</h4>
+<form method="GET" action="/pop-it-mvc/visits">
+    <select name="patient_id">
+        <option value="">Все пациенты</option>
+        <?php foreach ($patients as $p): ?>
+            <option value="<?= $p['id'] ?>">
+                <?= $p['last_name'] ?> <?= $p['first_name'] ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <button type="submit">Показать</button>
+</form>
+<hr>
 <?php foreach ($visits as $v): ?>
     <div style="margin-bottom:10px;">
         <b><?= $v['patient_last'] ?></b>

@@ -24,3 +24,5 @@ Route::add('visits/delete', [Visit::class, 'delete']);
 
 Route::add('doctors', [Doctor::class, 'index']);
 Route::add('doctors/create', [Doctor::class, 'create']);
+
+Route::add('go', [Site::class, 'go']);

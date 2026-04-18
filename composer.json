@@ -9,7 +9,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": { "php": "^7.4 | ^8.0"},
+    "require": { "php": "^7.4 | ^8.0",
+        "illuminate/database": "10.0",
+        "illuminate/events": "10.0"},
     "autoload": {
         "psr-4": {
             "Src\\": "core/Src/",

@@ -2,29 +2,29 @@
 
 use Src\Route;
 use Controller\Site;
-use Controller\Auth;
+use Controller\AuthController;
 use Controller\Admin;
 use Controller\Patient;
 use Controller\Visit;
 use Controller\Doctor;
 
-Route::add('', [Site::class, 'index']);
+Route::add('GET', '/', [Site::class, 'index'])->middleware('auth');
 
-Route::add('login', [Auth::class, 'login']);
-Route::add('logout', [Auth::class, 'logout']);
-Route::add('signup', [Auth::class, 'signup']);
+Route::add(['GET', 'POST'], '/login', [AuthController::class, 'login']);
+Route::add('GET', '/logout', [AuthController::class, 'logout']);
+Route::add(['GET', 'POST'], '/signup', [Site::class, 'signup']);
 
-Route::add('posts', [Site::class, 'posts']);
+Route::add('GET', '/posts', [Site::class, 'posts'])->middleware('auth');
 
-Route::add('admin', [Admin::class, 'index']);
-Route::add('admin/create-user', [Admin::class, 'create']);
+Route::add('GET', '/admin', [Admin::class, 'index'])->middleware('auth');
+Route::add(['GET', 'POST'], '/admin/create-user', [Admin::class, 'create'])->middleware('auth');
 
-Route::add('patients', [Patient::class, 'index']);
-Route::add('patients/create', [Patient::class, 'create']);
+Route::add('GET', '/patients', [Patient::class, 'index'])->middleware('auth');
+Route::add(['GET', 'POST'], '/patients/create', [Patient::class, 'create'])->middleware('auth');
 
-Route::add('visits', [Visit::class, 'index']);
-Route::add('visits/create', [Visit::class, 'create']);
-Route::add('visits/delete', [Visit::class, 'delete']);
+Route::add('GET', '/visits', [Visit::class, 'index'])->middleware('auth');
+Route::add(['GET', 'POST'], '/visits/create', [Visit::class, 'create'])->middleware('auth');
+Route::add('GET', '/visits/delete', [Visit::class, 'delete'])->middleware('auth');
 
-Route::add('doctors', [Doctor::class, 'index']);
-Route::add('doctors/create', [Doctor::class, 'create']);
+Route::add('GET', '/doctors', [Doctor::class, 'index'])->middleware('auth');
+Route::add(['GET', 'POST'], '/doctors/create', [Doctor::class, 'create'])->middleware('auth');

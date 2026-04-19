@@ -3,62 +3,99 @@
 namespace Src;
 
 use Error;
+use FastRoute\RouteCollector;
+use FastRoute\RouteParser\Std;
+use FastRoute\DataGenerator\MarkBased;
+use FastRoute\Dispatcher\MarkBased as Dispatcher;
+use Src\Traits\SingletonTrait;
 
 class Route
 {
-   private static array $routes = [];
-   private static string $prefix = '';
-
-    public static function setPrefix($value)
+    use SingletonTrait;
+    private string $currentRoute = '';
+    private $currentHttpMethod;
+    private string $prefix = '';
+    private RouteCollector $routeCollector;
+    private function __construct()
     {
-        self::$prefix = $value;
+        $this->routeCollector = new RouteCollector(new Std(), new MarkBased());
     }
 
-    public function __construct(string $prefix = '')
+    public static function add($httpMethod, string $route, array $action): self
     {
-        self::setPrefix($prefix);
+        self::single()->routeCollector->addRoute($httpMethod, $route, $action);
+        self::single()->currentHttpMethod = $httpMethod;
+        self::single()->currentRoute = $route;
+        return self::single();
     }
 
-    public static function add(string $route, array $action): void
+    public static function group(string $prefix, callable $callback): void
     {
-        if (!array_key_exists($route, self::$routes)) {
-            self::$routes[$route] = $action;
-        }
+        self::single()->routeCollector->addGroup($prefix, $callback);
+        Middleware::single()->group($prefix, $callback);
+    }
+    public function setPrefix(string $value = ''): self
+    {
+        $this->prefix = $value;
+        return $this;
     }
 
-   public function redirect(string $url): void
-   {
-       header('Location: ' . $this->getUrl($url));
-       exit;
-   }
-
-  public function start(): void
+    public function redirect(string $url): void
     {
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $uri = trim($uri, '/');
-        $segments = explode('/', $uri);
-        if (isset($segments[0]) && $segments[0] === 'pop-it-mvc') {
-            array_shift($segments);
-        }
-
-        if (isset($segments[0]) && $segments[0] === 'public') {
-            array_shift($segments);
-        }
-        $uri = implode('/', $segments);
-
-        if (!array_key_exists($uri, self::$routes)) {
-            throw new Error("This path does not exist: $uri");
-        }
-
-        $class = self::$routes[$uri][0];
-        $action = self::$routes[$uri][1];
-
-        call_user_func([new $class, $action], new \Src\Request());
+        header('Location: ' . $this->getUrl($url));
+        exit;
     }
+
     public function getUrl(string $url): string
     {
-        $base = self::$prefix ?: 'pop-it-mvc';
-        $url = trim($url, '/');
-        return '/' . trim($base, '/') . ($url ? '/' . $url : '');
+        $basePath = '/pop-it-mvc';
+        return $basePath . '/' . trim($url, '/');
+    }
+
+    public function middleware(...$middlewares): self
+    {
+        Middleware::single()->add($this->currentHttpMethod, $this->currentRoute, $middlewares);
+        return $this;
+    }
+    public function start(): void
+    {
+        $httpMethod = $_SERVER['REQUEST_METHOD'];
+        $uri = $_SERVER['REQUEST_URI'];
+        if (false !== $pos = strpos($uri, '?')) {
+            $uri = substr($uri, 0, $pos);
+        }
+        $uri = rawurldecode($uri);
+        $basePath = '/pop-it-mvc';
+        if (str_starts_with($uri, $basePath)) {
+            $uri = substr($uri, strlen($basePath));
+        }
+
+        $uri = '/' . trim($uri, '/');
+        if ($uri === '//') {
+            $uri = '/';
+        }
+        if ($uri === '') {
+            $uri = '/';
+        }
+        $dispatcher = new Dispatcher($this->routeCollector->getData());
+        $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+        switch ($routeInfo[0]) {
+            case Dispatcher::NOT_FOUND:
+                throw new Error('NOT_FOUND');
+
+            case Dispatcher::METHOD_NOT_ALLOWED:
+                throw new Error('METHOD_NOT_ALLOWED');
+
+            case Dispatcher::FOUND:
+                $handler = $routeInfo[1];
+                $vars = array_values($routeInfo[2]);
+
+                $vars[] = Middleware::single()->runMiddlewares($httpMethod, $uri);
+
+                [$class, $action] = $handler;
+
+                call_user_func([new $class, $action], ...$vars);
+                break;
+        }
     }
 }

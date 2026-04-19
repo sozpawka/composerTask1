@@ -23,7 +23,9 @@ class Settings
 
    public function getRootPath(): string
    {
-       return $this->path['root'] ? '/' . $this->path['root'] : '';
+       return !empty($this->_settings['path']['root'])
+           ? '/' . trim($this->_settings['path']['root'], '/')
+           : '';
    }
 
    public function getViewsPath(): string
@@ -33,9 +35,5 @@ class Settings
    public function getDbSetting(): array
     {
         return $this->db ?? [];
-    }
-    public function getBaseUrl(): string
-    {
-        return '/pop-it-mvc';
     }
 }

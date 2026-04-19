@@ -6,40 +6,43 @@ use Src\Session;
 
 class Auth
 {
-    private static IdentityInterface $user;
+    private static IdentityInterface $identity;
 
-    public static function init(IdentityInterface $user): void
+    public static function init(IdentityInterface $identity): void
     {
-        self::$user = $user;
-        if (self::user()) {
-            self::login(self::user());
-        }
+        self::$identity = $identity;
     }
 
     public static function login(IdentityInterface $user): void
     {
-        self::$user = $user;
-        Session::set('id', self::$user->getId());
+        Session::set('id', $user->getId());
     }
 
     public static function attempt(array $credentials): bool
     {
-        if ($user = self::$user->attemptIdentity($credentials)) {
-            self::login($user);
-            return true;
+        $user = self::$identity->attemptIdentity($credentials);
+
+        if (!$user) {
+            return false;
         }
-        return false;
+        self::login($user);
+        return true;
     }
 
     public static function user()
     {
-        $id = Session::get('id') ?? 0;
-        return self::$user->findIdentity($id);
+        $id = Session::get('id');
+
+        if (!$id) {
+            return null;
+        }
+
+        return self::$identity->findIdentity($id);
     }
 
     public static function check(): bool
     {
-        return (bool) self::user();
+        return self::user() !== null;
     }
 
     public static function logout(): bool

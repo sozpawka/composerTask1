@@ -4,18 +4,29 @@ namespace Src;
 
 class Session
 {
-    public static function set($name, $value): void
+    public static function start(): void
     {
-        $_SESSION[$name] = $value;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+    public static function set(string $key, mixed $value): void
+    {
+        $_SESSION[$key] = $value;
     }
 
-    public static function get($name)
+    public static function get(string $key): mixed
     {
-        return $_SESSION[$name] ?? null;
+        return $_SESSION[$key] ?? null;
     }
 
-    public static function clear($name)
+    public static function clear(string $key): void
     {
-        unset($_SESSION[$name]);
+        unset($_SESSION[$key]);
+    }
+    public static function destroy(): void
+    {
+        session_destroy();
+        $_SESSION = [];
     }
 }

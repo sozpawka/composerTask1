@@ -28,10 +28,21 @@ class Site
 
     public function signup(Request $request): string
     {
-        if ($request->method === 'POST' && User::create($request->all())) {
+        if ($request->method === 'POST') {
+            if (!$request->get('name') || !$request->get('login') || !$request->get('password')) {
+                return new View('site.signup', ['message' => 'Заполните все поля']);
+            }
+            if (User::where('login', $request->get('login'))->exists()) {
+                return new View('site.signup', ['message' => 'Логин уже занят']);
+            }
+            User::create([
+                'name' => $request->get('name'),
+                'login' => $request->get('login'),
+                'password' => $request->get('password'),
+                'role' => 'receptionist'
+            ]);
             return new View('site.signup', ['message' => 'Вы успешно зарегистрированы']);
         }
-
         return new View('site.signup');
     }
     public function login(Request $request): string

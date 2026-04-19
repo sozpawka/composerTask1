@@ -7,16 +7,14 @@ use Src\Request;
 
 class AuthMiddleware
 {
-    public function handle(Request $request)
+    public function handle(Request $request, $role = null)
     {
-        $uri = $_SERVER['REQUEST_URI'];
-
-        if ($uri === '/pop-it-mvc/login' || $uri === '/login') {
-            return;
-        }
-
         if (!Auth::check()) {
             app()->route->redirect('/login');
+            exit;
+        }
+        if ($role && Auth::user()->role !== $role) {
+            echo 'Нет доступа';
             exit;
         }
     }

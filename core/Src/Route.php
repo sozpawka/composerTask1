@@ -9,16 +9,27 @@ class Route
    private static array $routes = [];
    private static string $prefix = '';
 
-   public static function setPrefix($value)
-   {
-       self::$prefix = $value;
-   }
+    public static function setPrefix($value)
+    {
+        self::$prefix = $value;
+    }
 
-   public static function add(string $route, array $action): void
+    public function __construct(string $prefix = '')
+    {
+        self::setPrefix($prefix);
+    }
+
+    public static function add(string $route, array $action): void
+    {
+        if (!array_key_exists($route, self::$routes)) {
+            self::$routes[$route] = $action;
+        }
+    }
+
+   public function redirect(string $url): void
    {
-       if (!array_key_exists($route, self::$routes)) {
-           self::$routes[$route] = $action;
-       }
+       header('Location: ' . $this->getUrl($url));
+       exit;
    }
 
   public function start(): void
@@ -42,6 +53,12 @@ class Route
         $class = self::$routes[$uri][0];
         $action = self::$routes[$uri][1];
 
-        call_user_func([new $class, $action]);
+        call_user_func([new $class, $action], new \Src\Request());
+    }
+    public function getUrl(string $url): string
+    {
+        $base = self::$prefix ?: 'pop-it-mvc';
+        $url = trim($url, '/');
+        return '/' . trim($base, '/') . ($url ? '/' . $url : '');
     }
 }

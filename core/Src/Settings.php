@@ -34,4 +34,8 @@ class Settings
     {
         return $this->db ?? [];
     }
+    public function getBaseUrl(): string
+    {
+        return '/pop-it-mvc';
+    }
 }

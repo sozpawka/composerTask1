@@ -9,8 +9,12 @@ use Controller\Visit;
 use Controller\Doctor;
 
 Route::add('', [Site::class, 'index']);
+
 Route::add('login', [Auth::class, 'login']);
 Route::add('logout', [Auth::class, 'logout']);
+Route::add('signup', [Auth::class, 'signup']);
+
+Route::add('posts', [Site::class, 'posts']);
 
 Route::add('admin', [Admin::class, 'index']);
 Route::add('admin/create-user', [Admin::class, 'create']);
@@ -24,5 +28,3 @@ Route::add('visits/delete', [Visit::class, 'delete']);
 
 Route::add('doctors', [Doctor::class, 'index']);
 Route::add('doctors/create', [Doctor::class, 'create']);
-
-Route::add('go', [Site::class, 'go']);

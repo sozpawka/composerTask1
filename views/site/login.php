@@ -1,11 +1,12 @@
-<h1>Вход</h1>
+<h2>Авторизация</h2>
+<h3><?= $message ?? ''; ?></h3>
 
-<form method="POST" action="/pop-it-mvc/login">
-    <input type="text" name="login" placeholder="Логин" required>
-    <br><br>
+<h3><?= app()->auth->user()->name ?? ''; ?></h3>
 
-    <input type="password" name="password" placeholder="Пароль" required>
-    <br><br>
-
-    <button type="submit">Войти</button> <a href="/pop-it-mvc/">На главную</a>
+<?php if (!app()->auth::check()): ?>
+<form method="post">
+    <input name="login" placeholder="Логин">
+    <input type="password" name="password" placeholder="Пароль">
+    <button>Войти</button>
 </form>
+<?php endif; ?>

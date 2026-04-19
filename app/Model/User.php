@@ -2,32 +2,45 @@
 
 namespace Model;
 
-use PDO;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Src\Auth\IdentityInterface;
 
-class User
+class User extends Model implements IdentityInterface
 {
-    private static function db()
-    {
-        return new PDO('mysql:host=127.0.0.1;dbname=clinic;charset=utf8', 'root', '');
-    }
-    public static function findByLogin($login)
-    {
-        $stmt = self::db()->prepare("SELECT * FROM users WHERE login = ?");
-        $stmt->execute([$login]);
+   use HasFactory;
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-    public static function create($data)
-    {
-        $stmt = self::db()->prepare("
-            INSERT INTO users (login, password, role)
-            VALUES (?, ?, ?)
-        ");
+   public $timestamps = false;
+   protected $fillable = [
+       'name',
+       'login',
+       'password'
+   ];
 
-        return $stmt->execute([
-            $data['login'],
-            md5($data['password']),
-            $data['role']
-        ]);
-    }
+   protected static function booted()
+   {
+       static::created(function ($user) {
+           $user->password = md5($user->password);
+           $user->save();
+       });
+   }
+
+   //Выборка пользователя по первичному ключу
+   public function findIdentity(int $id)
+   {
+       return self::where('id', $id)->first();
+   }
+
+   //Возврат первичного ключа
+   public function getId(): int
+   {
+       return $this->id;
+   }
+
+   //Возврат аутентифицированного пользователя
+   public function attemptIdentity(array $credentials)
+   {
+       return self::where(['login' => $credentials['login'],
+           'password' => md5($credentials['password'])])->first();
+   }
 }

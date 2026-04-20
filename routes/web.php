@@ -24,7 +24,7 @@ Route::add(['GET', 'POST'], '/patients/create', [Patient::class, 'create'])->mid
 
 Route::add('GET', '/visits', [Visit::class, 'index'])->middleware('auth:receptionist');
 Route::add(['GET', 'POST'], '/visits/create', [Visit::class, 'create'])->middleware('auth:receptionist');
-Route::add('GET', '/visits/delete', [Visit::class, 'delete'])->middleware('auth:receptionist');
+Route::add(['POST'], '/visits/delete', [Visit::class, 'delete'])->middleware('auth:receptionist');
 
 Route::add('GET', '/doctors', [Doctor::class, 'index'])->middleware('auth:receptionist');
 Route::add(['GET', 'POST'], '/doctors/create', [Doctor::class, 'create'])->middleware('auth:receptionist');

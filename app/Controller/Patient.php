@@ -2,13 +2,12 @@
 
 namespace Controller;
 
-use Src\View;
-
+use Src\Auth\Auth;
 class Patient
 {
     private function auth()
     {
-        return $_SESSION['user'] ?? null;
+        return Auth::user();
     }
     public function index(): string
     {

@@ -15,17 +15,41 @@ class Site
     {
         return (new View())->render('site.index');
     }
+    public function uploadPhoto(Request $request): void
+    {
+        if ($request->method === 'POST') {
+            $data = array_merge($request->all(), $_FILES);
+            $validator = new Validator($data, [
+                'avatar' => ['required', 'img', 'max_file:2048'],
+            ], [
+                'required' => 'Файл не выбран',
+                'img' => 'Можно загружать только JPG или PNG',
+                'max_file' => 'Файл слишком тяжелый (максимум 2МБ)'
+            ]);
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                \Src\Session::set('photo_error', $errors['avatar'][0]);
+                app()->route->redirect('/');
+            }
+            $file = $_FILES['avatar'];
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $fileName = time() . '_' . uniqid() . '.' . $ext;
+            $path = realpath(__DIR__ . '/../../public/uploads') . DIRECTORY_SEPARATOR . $fileName;
+            if (move_uploaded_file($file['tmp_name'], $path)) {
+                $user = Auth::user();
+                if ($user) {
+                    $user->avatar = $fileName;
+                    $user->save();
+                }
+            }
+        }
+        app()->route->redirect('/');
+    }
 
     public function posts(Request $request): string
     {
         $id = $request->get('id');
-
-        if ($id) {
-            $posts = Post::where('id', $id)->get();
-        } else {
-            $posts = Post::all();
-        }
-
+        $posts = $id ? Post::where('id', $id)->get() : Post::all();
         return (new View())->render('site.post', ['posts' => $posts]);
     }
 
@@ -62,9 +86,7 @@ class Site
             app()->route->redirect('/hello');
         }
 
-        return new View('site.login', [
-            'message' => 'Неверный логин или пароль'
-        ]);
+        return new View('site.login', ['message' => 'Неверный логин или пароль']);
     }
     public function logout(): void
     {

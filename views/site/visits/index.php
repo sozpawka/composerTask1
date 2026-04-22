@@ -1,165 +1,200 @@
 <style>
-	.filter-row {
-		display: flex;
-		align-items: center;
-		gap: 20px;
-	}
+    .filter-row,
+    .filter-group,
+    .filter-param-form,
+    .search-form,
+    .search-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
 
-	.filter-group {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-		flex-wrap: wrap;
-		gap: 10px;
-	}
+    .filter-group {
+        justify-content: space-between;
+        width: 100%;
+        flex-wrap: wrap;
+    }
 
-	.find-btn {
-		padding: 6px 18px;
-		font-size: 14px;
-		height: 35px;
-		width: 100px;
-		border: none;
-		background: #1688D3;
-		color: #fff;
-		border-radius: 6px;
-		cursor: pointer;
-	}
+    .filter-block {
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
 
-	.find-btn:hover {
-		background: #0f6fb3;
-	}
+    .filter-param-form {
+        justify-content: center;
+    }
 
-	.filter-block {
-		text-align: center;
-		font-size: 20px;
-		color: gray;
-		min-height: 60px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-wrap: wrap;
-		gap: 10px;
-	}
+    .filter-param-form select,
+    .filter-param-form input[type="date"],
+    .search-input,
+    .modal-content input,
+    .modal-content select {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
 
-	.filter-param-form {
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		flex-wrap: wrap;
-		justify-content: center;
-	}
+    .search-input {
+        flex-grow: 1;
+        height: 40px;
+    }
 
-	.filter-param-form select,
-	.filter-param-form input[type="date"] {
-		padding: 8px 12px;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		font-size: 14px;
-	}
+    .find-btn,
+    .add-btn,
+    .cancel-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s, transform 0.1s;
+        text-decoration: none;
+        box-sizing: border-box;
+        white-space: nowrap;
+    }
 
-	.filter-group .find-btn {
-		height: 50px;
-	}
+    .find-btn,
+    .add-btn {
+        background: #1688D3;
+        color: #fff;
+        height: 40px;
+        padding: 0 20px;
+    }
 
-	.table {
-		width: 100%;
-		border-collapse: collapse;
-		background: #fff;
-		text-align: center;
-	}
+    .find-btn:hover,
+    .add-btn:hover {
+        background: #0f6fb3;
+    }
 
-	.table th,
-	.table td {
-		border: 1px solid #000;
-		padding: 12px;
-	}
+    .find-btn:active,
+    .add-btn:active {
+        transform: translateY(1px);
+    }
 
-	.table th {
-		background: #ddd;
-	}
+    .add-btn {
+        margin-top: 30px;
+        padding: 18px 30px;
+        font-size: 18px;
+        height: auto;
+    }
 
-	.cancel-btn {
-		padding: 6px 14px;
-		font-size: 14px;
-		background: #e53935;
-		color: #fff;
-		border: none;
-		border-radius: 5px;
-		cursor: pointer;
-	}
+    .cancel-btn {
+        padding: 6px 14px;
+        background: #e53935;
+        color: #fff;
+    }
 
-	.cancel-btn:hover {
-		background: #b71c1c;
-	}
+    .cancel-btn:hover {
+        background: #b71c1c;
+    }
 
-	.add-btn {
-		margin-top: 30px;
-		padding: 18px 30px;
-		font-size: 18px;
-		background: #1688D3;
-		color: #fff;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
-	}
+    a.find-btn {
+        background: #999;
+    }
 
-	.add-btn:hover {
-		background: #0f6fb3;
-	}
+    a.find-btn:hover {
+        background: #777;
+    }
 
-	.modal {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		justify-content: center;
-		align-items: center;
-		z-index: 1000;
-	}
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        text-align: center;
+        margin-top: 10px;
+    }
 
-	.modal-content {
-		background: #fff;
-		padding: 40px;
-		border-radius: 10px;
-		min-width: 300px;
-		position: relative;
-	}
+    .table th,
+    .table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+    }
 
-	.modal input,
-	.modal select {
-		width: 100%;
-		margin-bottom: 15px;
-		padding: 10px;
-		box-sizing: border-box;
-	}
+    .table th {
+        background: #f5f5f5;
+        font-weight: bold;
+    }
 
-	.divider {
-		height: 2px;
-		background: #ddd;
-		margin: 15px 0;
-	}
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
 
-	.hidden {
-		display: none;
-	}
+    .modal-content {
+        background: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        min-width: 350px;
+    }
 
-	.empty-msg {
-		color: #888;
-		font-style: italic;
-		padding: 20px;
-	}
+    .modal-content h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .modal-content input,
+    .modal-content select {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .divider {
+        height: 1px;
+        background: #eee;
+        margin: 20px 0;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .empty-msg {
+        color: #888;
+        font-style: italic;
+        padding: 20px;
+    }
+
+    .search-form {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+        margin: 20px 0;
+    }
 </style>
 
 <div class="container">
-	<h2>Записи к врачу</h2>
-	<div class="divider"></div>
+    <h2>Записи к врачу</h2>
+    <div class="divider"></div>
 
-	<div class="filter-row">
-		<strong>Фильтр:</strong>
+    <form class="search-form" method="GET" action="/pop-it-mvc/visits">
+        <input type="text" name="search" class="search-input" placeholder="Поиск по пациенту или врачу" value="<?= htmlspecialchars($search ?? '') ?>">
+        <div class="search-controls">
+            <button type="submit" class="find-btn">Найти</button>
+            <?php if (!empty($search)): ?>
+                <a href="<?= app()->route->getUrl('/visits') ?>" class="find-btn" style="text-decoration: none; background: #999;">Сброс</a>
+            <?php endif; ?>
+        </div>
+    </form>
+    <div class="divider"></div>
+    <div class="filter-row">
+        <strong>Фильтр:</strong>
 		<form method="GET" action="/pop-it-mvc/visits" class="filter-group">
 			<label><input type="radio" name="filter" value="none" <?= empty($filter)||$filter=='none'?'checked':'' ?>> Без фильтра</label>
 			<label><input type="radio" name="filter" value="patient" <?= $filter=='patient'?'checked':'' ?>> По пациенту</label>

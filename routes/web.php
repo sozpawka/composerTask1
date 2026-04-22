@@ -28,3 +28,5 @@ Route::add(['POST'], '/visits/delete', [Visit::class, 'delete'])->middleware('au
 
 Route::add('GET', '/doctors', [Doctor::class, 'index'])->middleware('auth:receptionist');
 Route::add(['GET', 'POST'], '/doctors/create', [Doctor::class, 'create'])->middleware('auth:receptionist');
+
+Route::add('POST', '/upload-photo', [Controller\Site::class, 'uploadPhoto']);

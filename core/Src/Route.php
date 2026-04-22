@@ -49,6 +49,9 @@ class Route
     public function getUrl(string $url): string
     {
         $basePath = '/pop-it-mvc';
+        if (str_starts_with($url, $basePath)) {
+            return $url;
+        }
         return $basePath . '/' . trim($url, '/');
     }
 

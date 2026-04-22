@@ -6,6 +6,7 @@ use Src\View;
 use Src\Auth\Auth;
 use Src\Validator\Validator;
 use Model\User;
+use Src\Request;
 
 class Admin
 {
@@ -28,10 +29,10 @@ class Admin
         exit;
     }
 
-    public function create(): string
+    public function create(Request $request): string
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $validator = new Validator($_POST, [
+        if ($request->method === 'POST') {
+            $validator = new Validator($request->all(), [
                 'name' => ['required'],
                 'login' => ['required', 'unique:users,login'],
                 'password' => ['required']
@@ -46,7 +47,7 @@ class Admin
                 ]);
             }
 
-            if (User::create($_POST)) {
+            if (User::create($request->all())) {
                 return (new View())->render('site.admin.create-user', [
                     'message' => 'Сотрудник успешно создан'
                 ]);

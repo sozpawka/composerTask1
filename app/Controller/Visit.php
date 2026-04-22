@@ -3,15 +3,16 @@
 namespace Controller;
 
 use Src\View;
+use Src\Request;
 
 class Visit
 {
-    public function index(): string
+    public function index(Request $request): string
     {
-        $filter = $_GET['filter'] ?? '';
-        $patientId = $_GET['patient_id'] ?? null;
-        $doctorId = $_GET['doctor_id'] ?? null;
-        $date = $_GET['date'] ?? null;
+        $filter = $request->get('filter') ?? '';
+        $patientId = $request->get('patient_id') ? (int)$request->get('patient_id') : null;
+        $doctorId = $request->get('doctor_id') ? (int)$request->get('doctor_id') : null;
+        $date = $request->get('date') ?? null;
         $mode = 'visits';
         $visits = [];
         $doctorsByPatient = [];
@@ -51,15 +52,16 @@ class Visit
             'selectedDate' => $date
         ]);
     }
-    public function create(): void
+    public function create(Request $request): void
     {
-        \Model\Visit::create($_POST);
+        \Model\Visit::create($request->all());
         header('Location: /pop-it-mvc/visits');
         exit;
     }
-    public function delete(): void
+    public function delete(Request $request): void
     {
-        \Model\Visit::delete($_POST['id']);
+        $id = (int) $request->get('id');
+        \Model\Visit::delete($id);
         header('Location: /pop-it-mvc/visits');
         exit;
     }

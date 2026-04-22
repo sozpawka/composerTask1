@@ -68,6 +68,7 @@
 <div class="admin-container">
     <h2>Создать сотрудника</h2>
     <form method="POST" class="admin-form">
+        <input name="csrf_token" type="hidden" value="<?= app()->auth::generateCSRF() ?>"/>
         
         <input type="text" name="name" placeholder="Имя" value="<?= $_POST['name'] ?? '' ?>">
         <?php if(isset($errors['name'])): ?>
@@ -92,7 +93,6 @@
         <button type="submit">Создать</button>
     </form>
 </div>
-
 <?php if (isset($message)): ?>
 <div class="modal active">
     <div class="modal-box">

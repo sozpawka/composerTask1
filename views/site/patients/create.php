@@ -88,6 +88,7 @@
         <?php endif; ?>
 
         <form method="POST" action="/pop-it-mvc/patients/create">
+            <input name="csrf_token" type="hidden" value="<?= app()->auth::generateCSRF() ?>"/>
             <div class="form-grid">
                 <div class="form-group">
                     Фамилия

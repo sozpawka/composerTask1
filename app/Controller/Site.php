@@ -7,12 +7,15 @@ use Src\View;
 use Src\Request;
 use Model\User;
 use Src\Auth\Auth;
+use Src\Validator\Validator;
+
 class Site
 {
     public function index(): string
     {
         return (new View())->render('site.index');
     }
+
     public function posts(Request $request): string
     {
         $id = $request->get('id');
@@ -29,19 +32,23 @@ class Site
     public function signup(Request $request): string
     {
         if ($request->method === 'POST') {
-            if (!$request->get('name') || !$request->get('login') || !$request->get('password')) {
-                return new View('site.signup', ['message' => 'Заполните все поля']);
-            }
-            if (User::where('login', $request->get('login'))->exists()) {
-                return new View('site.signup', ['message' => 'Логин уже занят']);
-            }
-            User::create([
-                'name' => $request->get('name'),
-                'login' => $request->get('login'),
-                'password' => $request->get('password'),
-                'role' => 'receptionist'
+            $validator = new Validator($request->all(), [
+                'name' => ['required'],
+                'login' => ['required', 'unique:users,login'],
+                'password' => ['required']
+            ], [
+                'required' => 'Поле :field пусто',
+                'unique' => 'Поле :field должно быть уникально'
             ]);
-            return new View('site.signup', ['message' => 'Вы успешно зарегистрированы']);
+
+            if ($validator->fails()) {
+                return new View('site.signup',
+                    ['message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)]);
+            }
+
+            if (User::create($request->all())) {
+                app()->route->redirect('/login');
+            }
         }
         return new View('site.signup');
     }

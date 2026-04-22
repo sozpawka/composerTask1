@@ -56,6 +56,14 @@
 .submit-btn:active {
     background: #084d7a;
 }
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c6cb;
+}
 </style>
 
 <div class="container">
@@ -64,18 +72,35 @@
 
         <div class="form-title">Добавление врача</div>
 
+        <?php if (!empty($message)): ?>
+            <div class="error-message">
+                <?php 
+                    $errors = json_decode($message, true); 
+                    if (is_array($errors)): 
+                        foreach ($errors as $fieldErrors): 
+                            foreach ($fieldErrors as $error): ?>
+                                <p style="margin: 0;"><?= $error ?></p>
+                            <?php endforeach; 
+                        endforeach; 
+                    else: 
+                        echo $message;
+                    endif; 
+                ?>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" action="/pop-it-mvc/doctors/create">
 
             <div class="form-grid">
 
                 <div class="form-group">
                     Фамилия
-                    <input type="text" name="last_name" required>
+                    <input type="text" name="last_name">
                 </div>
 
                 <div class="form-group">
                     Имя
-                    <input type="text" name="first_name" required>
+                    <input type="text" name="first_name">
                 </div>
 
                 <div class="form-group">
@@ -85,17 +110,17 @@
 
                 <div class="form-group">
                     Дата рождения
-                    <input type="date" name="birth_date" required>
+                    <input type="date" name="birth_date">
                 </div>
 
                 <div class="form-group">
                     Должность
-                    <input type="text" name="position" required>
+                    <input type="text" name="position">
                 </div>
 
                 <div class="form-group">
                     Специализация
-                    <input type="text" name="specialization" required>
+                    <input type="text" name="specialization">
                 </div>
 
             </div>

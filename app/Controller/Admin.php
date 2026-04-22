@@ -4,6 +4,8 @@ namespace Controller;
 
 use Src\View;
 use Src\Auth\Auth;
+use Src\Validator\Validator;
+use Model\User;
 
 class Admin
 {
@@ -29,16 +31,26 @@ class Admin
     public function create(): string
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            \Model\User::create([
-                'name' => $_POST['name'],
-                'login' => $_POST['login'],
-                'password' => $_POST['password'],
-                'role' => $_POST['role']
+            $validator = new Validator($_POST, [
+                'name' => ['required'],
+                'login' => ['required', 'unique:users,login'],
+                'password' => ['required']
+            ], [
+                'required' => 'Поле :field не заполнено',
+                'unique' => 'Логин :value уже занят'
             ]);
 
-            return (new View())->render('site.admin.create-user', [
-                'message' => 'Пользователь создан'
-            ]);
+            if ($validator->fails()) {
+                return (new View())->render('site.admin.create-user', [
+                    'errors' => $validator->errors()
+                ]);
+            }
+
+            if (User::create($_POST)) {
+                return (new View())->render('site.admin.create-user', [
+                    'message' => 'Сотрудник успешно создан'
+                ]);
+            }
         }
 
         return (new View())->render('site.admin.create-user');

@@ -56,10 +56,12 @@
     }
 
     .error-message {
-        text-align: center;
-        color: #e53935;
-        font-size: 16px;
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border-radius: 4px;
         margin-bottom: 15px;
+        border: 1px solid #f5c6cb;
     }
 </style>
 
@@ -67,23 +69,36 @@
     <h2>Регистрация</h2>
     
     <?php if (!empty($message)): ?>
-        <div class="error-message"><?= $message ?></div>
+        <div class="error-message">
+            <?php 
+                $errors = json_decode($message, true); 
+                if (is_array($errors)): 
+                    foreach ($errors as $fieldErrors): 
+                        foreach ($fieldErrors as $error): ?>
+                            <p style="margin: 0;"><?= $error ?></p>
+                        <?php endforeach; 
+                    endforeach; 
+                else: 
+                    echo $message;
+                endif; 
+            ?>
+        </div>
     <?php endif; ?>
 
     <form method="post" class="auth-form">
         <div class="form-group">
             <label>Имя</label>
-            <input type="text" name="name" required>
+            <input type="text" name="name">
         </div>
 
         <div class="form-group">
             <label>Логин</label>
-            <input type="text" name="login" required>
+            <input type="text" name="login">
         </div>
         
         <div class="form-group">
             <label>Пароль</label>
-            <input type="password" name="password" required>
+            <input type="password" name="password">
         </div>
         
         <button type="submit">Зарегистрироваться</button>

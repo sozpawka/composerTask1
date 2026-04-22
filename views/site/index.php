@@ -7,6 +7,7 @@
         <?php if ($user): ?>
             <div class="role">
                 Вы вошли как: <?= $user->login ?>
+                Ваше имя в базе: <?= $user->name ?>
             </div>
         <?php endif; ?>
     </div>

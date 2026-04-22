@@ -10,7 +10,7 @@
             background: #f5f5f5;
         }
 
-        .header {
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;

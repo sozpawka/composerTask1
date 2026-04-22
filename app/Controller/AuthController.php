@@ -25,6 +25,16 @@ class AuthController
 
             Auth::login($user);
 
+            if ($user->role === 'admin') {
+                header('Location: /pop-it-mvc/admin');
+                exit;
+            }
+
+            if ($user->role === 'receptionist') {
+                header('Location: /pop-it-mvc/patients');
+                exit;
+            }
+
             header('Location: /pop-it-mvc/');
             exit;
         }

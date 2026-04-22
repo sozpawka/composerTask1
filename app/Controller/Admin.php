@@ -3,34 +3,42 @@
 namespace Controller;
 
 use Src\View;
+use Src\Auth\Auth;
 
 class Admin
 {
+    public function __construct()
+    {
+        if (!Auth::check()) {
+            header('Location: /pop-it-mvc/login');
+            exit;
+        }
+
+        if (Auth::user()->role !== 'admin') {
+            header('Location: /pop-it-mvc/');
+            exit;
+        }
+    }
+
     public function index(): string
     {
-        $user = $_SESSION['user'] ?? null;
-        if (!$user) {
-            header('Location: /pop-it-mvc/login');
-            exit;
-        }
-        return (new View())->render('site.admin.index');
+        header('Location: /pop-it-mvc/admin/create-user');
+        exit;
     }
+
     public function create(): string
     {
-        $user = $_SESSION['user'] ?? null;
-        if (!$user) {
-            header('Location: /pop-it-mvc/login');
-            exit;
-        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             \Model\User::create([
+                'name' => $_POST['name'],
                 'login' => $_POST['login'],
                 'password' => $_POST['password'],
-                'role' => 'admin'
+                'role' => $_POST['role']
             ]);
 
-            header('Location: /pop-it-mvc/admin');
-            exit;
+            return (new View())->render('site.admin.create-user', [
+                'message' => 'Пользователь создан'
+            ]);
         }
 
         return (new View())->render('site.admin.create-user');

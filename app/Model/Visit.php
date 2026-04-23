@@ -67,9 +67,7 @@ class Visit
             JOIN doctors d ON d.id = v.doctor_id
             WHERE v.patient_id = ?
         ");
-
         $stmt->execute([$patientId]);
-
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

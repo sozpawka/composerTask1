@@ -5,6 +5,7 @@ namespace Controller;
 use Src\View;
 use Src\Request;
 use Src\Validator\Validator;
+use function Collect\collection;
 
 class Visit
 {
@@ -20,16 +21,15 @@ class Visit
         $doctorsByPatient = [];
 
         if (!empty($search)) {
-            $allVisits = \Model\Visit::all();
             $search = mb_strtolower($search);
-            foreach ($allVisits as $v) {
-                $pName = mb_strtolower(($v['patient_last'] ?? '') . ' ' . ($v['patient_first'] ?? ''));
-                $dName = mb_strtolower(($v['doctor_last'] ?? '') . ' ' . ($v['doctor_first'] ?? ''));
-                $pos = mb_strtolower($v['doctor_position'] ?? '');
-                if (str_contains($pName, $search) || str_contains($dName, $search) || str_contains($pos, $search)) {
-                    $visits[] = $v;
-                }
-            }
+            $visits = collection(\Model\Visit::all())
+                ->filter(function ($v) use ($search) {
+                    $pName = mb_strtolower(($v['patient_last'] ?? '') . ' ' . ($v['patient_first'] ?? ''));
+                    $dName = mb_strtolower(($v['doctor_last'] ?? '') . ' ' . ($v['doctor_first'] ?? ''));
+                    $pos = mb_strtolower($v['doctor_position'] ?? '');
+                    return str_contains($pName, $search) || str_contains($dName, $search) || str_contains($pos, $search);
+                })
+                ->toArray();
         } elseif ($filter === 'patient') {
             $visits = \Model\Visit::all(['patient_id' => $patientId]);
         } elseif ($filter === 'doctor') {

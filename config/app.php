@@ -17,4 +17,7 @@ return [
         'trim' => \Middlewares\TrimMiddleware::class,
         'specialChars' => \Middlewares\SpecialCharsMiddleware::class,
     ],
+    'globalMiddleware' => [
+        \Middlewares\SpecialCharsMiddleware::class,
+    ],
 ];

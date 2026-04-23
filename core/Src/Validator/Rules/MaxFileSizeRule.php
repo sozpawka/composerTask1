@@ -4,8 +4,11 @@ use Src\Validator\AbstractRule;
 
 class MaxFileSizeRule extends AbstractRule {
     public function rule(): bool {
-        if (empty($this->value['size'])) return false;
-        $maxSize = (int)$this->args[0] * 1024;
+        if (!isset($this->value['size']) || (isset($this->value['error']) && $this->value['error'] !== 0)) {
+            return false;
+        }
+        
+        $maxSize = (int)($this->args[0] ?? 2048) * 1024;
         return $this->value['size'] <= $maxSize;
     }
     public function validate(): string {

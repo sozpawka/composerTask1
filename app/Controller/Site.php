@@ -30,6 +30,7 @@ class Site
                 $errors = $validator->errors();
                 \Src\Session::set('photo_error', $errors['avatar'][0]);
                 app()->route->redirect('/');
+                return;
             }
             $file = $_FILES['avatar'];
             $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -44,13 +45,6 @@ class Site
             }
         }
         app()->route->redirect('/');
-    }
-
-    public function posts(Request $request): string
-    {
-        $id = $request->get('id');
-        $posts = $id ? Post::where('id', $id)->get() : Post::all();
-        return (new View())->render('site.post', ['posts' => $posts]);
     }
 
     public function signup(Request $request): string
@@ -78,9 +72,7 @@ class Site
     }
     public function login(Request $request): string
     {
-        if ($request->method === 'GET') {
-            return new View('site.login');
-        }
+        if ($request->method === 'GET') return new View('site.login');
 
         if (Auth::attempt($request->all())) {
             app()->route->redirect('/hello');

@@ -301,7 +301,7 @@
 	<div class="modal-content" onclick="event.stopPropagation()">
 		<h3>Новая запись</h3>
 		<form method="POST" action="/pop-it-mvc/visits/create">
-			<select name="patient_id" required>
+			<select name="patient_id">
 				<option value="" disabled selected>Выберите пациента</option>
 				<?php foreach ($patients as $p): ?>
 					<option value="<?= $p['id'] ?>">
@@ -310,7 +310,7 @@
 				<?php endforeach; ?>
 			</select>
 
-			<select name="doctor_id" required>
+			<select name="doctor_id">
 				<option value="" disabled selected>Выберите врача</option>
 				<?php foreach ($doctors as $d): ?>
 					<option value="<?= $d['id'] ?>">
@@ -319,7 +319,7 @@
 				<?php endforeach; ?>
 			</select>
 
-			<input type="datetime-local" name="visit_date" required>
+			<input type="datetime-local" name="visit_date">
 			<button type="submit" class="find-btn">Записать</button>
 		</form>
 	</div>

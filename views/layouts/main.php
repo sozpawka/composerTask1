@@ -226,7 +226,7 @@
 
         <form action="<?= app()->route->getUrl('/upload-photo') ?>" method="post" enctype="multipart/form-data">
             <input name="csrf_token" type="hidden" value="<?= \Src\Session::get('csrf_token') ?>"/>      
-            <input type="file" name="avatar" accept="image/*" required>
+            <input type="file" name="avatar" accept="image/*">
             <p class="hint-text">Максимальный размер: 2МБ (jpg, png)</p>
             <div class="modal-footer">
                 <button type="submit" class="modal-form-btn">Загрузить</button>

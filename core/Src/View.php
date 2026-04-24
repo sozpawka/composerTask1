@@ -18,53 +18,49 @@ class View
        $this->data = $data;
    }
 
-   //Полный путь до директории с представлениями
    private function getRoot(): string
-        {
-            return $_SERVER['DOCUMENT_ROOT'] . '/pop-it-mvc/views';
-        }
+   {
+       // Находим путь к папке views относительно текущего файла (core/Src/View.php)
+       return realpath(__DIR__ . '/../../views');
+   }
 
-   //Путь до основного файла с шаблоном сайта
    private function getPathToMain(): string
    {
        return $this->root . $this->layout;
    }
 
-   //Путь до текущего шаблона
    private function getPathToView(string $view = ''): string
    {
        $view = str_replace('.', '/', $view);
-       return $this->getRoot() . "/$view.php";
+       return $this->root . "/$view.php";
    }
 
    public function render(string $view = '', array $data = []): string
    {
        $path = $this->getPathToView($view);
+       $mainPath = $this->getPathToMain();
 
-       if (file_exists($this->getPathToMain()) && file_exists($path)) {
-
-           //Импортирует переменные из массива в текущую таблицу символов
+       if (file_exists($mainPath) && file_exists($path)) {
            extract($data, EXTR_PREFIX_SAME, '');
 
-           //Включение буферизации вывода
            ob_start();
            require $path;
-           //Помещаем буфер в переменную и очищаем его
            $content = ob_get_clean();
 
-           //Возвращаем собранную страницу
-           return require($this->getPathToMain());
+           ob_start();
+           require $mainPath;
+           return ob_get_clean();
        }
-       throw new Exception('Error render');
+       // Выводим путь в ошибке, чтобы понять, где он ищет файл, если опять упадет
+       throw new Exception('Error render. Path not found: ' . $path);
    }
 
    public function __toString(): string
    {
-       return $this->render($this->view, $this->data);
+       try {
+           return $this->render($this->view, $this->data);
+       } catch (Exception $e) {
+           return $e->getMessage();
+       }
    }
-
 }
-
-// Убрана зависимость от Settings и global $app, чтобы View не зависел от bootstrap и инициализации приложения.
-// Путь к views зафиксирован через DOCUMENT_ROOT для стабильной работы в локальном окружении (XAMPP).
-// Упрощённая реализация MVC: слой представления не использует конфигурационный слой приложения.

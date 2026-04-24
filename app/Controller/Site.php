@@ -60,25 +60,29 @@ class Site
             ]);
 
             if ($validator->fails()) {
-                return new View('site.signup',
+                return (new View())->render('site.signup',
                     ['message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)]);
             }
 
             if (User::create($request->all())) {
                 app()->route->redirect('/login');
+                return '';
             }
         }
-        return new View('site.signup');
+        return (new View())->render('site.signup');
     }
     public function login(Request $request): string
     {
-        if ($request->method === 'GET') return new View('site.login');
+        if ($request->method === 'GET') {
+            return (new View())->render('site.login');
+        }
 
         if (Auth::attempt($request->all())) {
             app()->route->redirect('/hello');
+            return '';
         }
 
-        return new View('site.login', ['message' => 'Неверный логин или пароль']);
+        return (new View())->render('site.login', ['message' => 'Неверный логин или пароль']);
     }
     public function logout(): void
     {

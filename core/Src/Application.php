@@ -45,7 +45,7 @@ class Application
         $this->dbManager->setAsGlobal();
         $this->dbManager->bootEloquent();
     }
-
+                 
     public function run(): void
     {
         $this->route->start();
